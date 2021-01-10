@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="index.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.9.5/dist/ffmpeg.min.js"></script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.9.5/dist/ffmpeg.min.js"></script>
+<script src="index.js" type="text/javascript"></script>
+<html>
+    <body>
+        <div id=app-container>
+            <div id=control-panel-container>
+                <video id="video-preview" width="300" height="169" controls></video>
+                <p>Import:</p>
+                <p><input id="photo-import" type="file" multiple accept="image/jpeg"></input></p>
+                <p>Sort by file name: <button id="sort-ascending-button">Ascending</button> <button id="sort-descending-button">Descending</button> </select></p>
+                <p>Framerate: <select id="framerate-selector"></select></p>
+                <p>Fiting: <select id="crop-selector"></select></p>
+                <p>Aspect Ratio: <select id="aspect-ratio-selector"></select></p>
+                <p>Orientation: <select id="orientation-selector"></select></p>
+                <p>Resolution: <select id="resolution-selector"></select></p>
+                <p><button id="make-video-button">Make video</button></p>
+                <p><a id="download-video-button"><button>Download video</button></a></p>
+            </div>
+            <div id="thumbnails-preview-container"></div>
+        </div>
+        <div id="loading-overlay">
+            <div id="progress-container">
+                <p>Rendering video...</p>
+                <div id="progress-bar">
+                    <div id="progress"></div>
+                </div>
+                <p id="progress-text">1 %</p>
+            </div>
+        </div>
+    </body>
+</html>
