@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.9.5/dist/ffmpeg.min.js"></script>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.9.5/dist/ffmpeg.min.js"></script>
+<script src="index.js" type="text/javascript"></script>
+<html>
+    <body>
+        <p>Select your photos: </p>
+        <input id="photo-import" type="file" multiple accept="image/x-png, image/jpeg"></input>
+        <select id="framerate-selector"></select>
+        <select id="crop-selector"></select>
+        <select id="aspect-ratio-selector"></select>
+        <select id="orientation-selector"></select>
+        <select id="resolution-selector"></select>
+
+        <button id="make-video-button">Make video</button>
+        <video id="video-preview" width="852" height="480" controls></video>
+        <div id="thumbnails-preview-container"></div>
+    </body>
+</html>
