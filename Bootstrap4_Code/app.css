@@ -64,13 +64,13 @@ body {
       font-size: 2rem;
   }
 }
-.col-md-12-head{
-
-  width: 50%;
-  height: 50%;
+.col-md-12-2{
+  margin:2.5% auto;
+  width: 35%;
+  height: 35%;
   align-items: center;
+  align-self: center;
 }
-
 
 
 hr {
