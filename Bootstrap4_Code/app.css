@@ -1,16 +1,16 @@
 body {
-  background: #d5e7f5;
+  background: #002e52;
   font-family: "Nunito", sans-serif;
 }
 
 .blurb h2 {
- color: #3702f5;
+ color: #ffffff;
  font-weight: 100;
  font-size: 2.5rem;
 }
 
 .blurb p {
-  color: #4619e9fd;
+  color: #ffffff;
   font-weight: 100;
   font-size: 1.125rem;
   line-height: 2;
@@ -47,10 +47,11 @@ body {
 #headingGroup h1 {
   font-weight: 100;
   font-size: 4rem;
+  color: #79ea1c;
 }
 
 .navbar.scrolled {
-  background: rgb(26, 4, 228);
+  background: rgb(6, 112, 199);
   transition: background 500ms;
 }
 
@@ -70,3 +71,11 @@ body {
   align-items: center;
 }
 
+
+
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
