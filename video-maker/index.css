@@ -2,6 +2,8 @@
 
 body {
     font-family: sans-serif;
+    margin: 0px;
+    overflow-x: hidden;
 }
 
 #app-container {
@@ -11,7 +13,7 @@ body {
 }
 
 #control-panel-container {
-    width: 320px;
+    width: 340px;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -20,13 +22,29 @@ body {
     background: #eeeeee;
 }
 
+#thumbnails-preview-container {
+    width: calc(100vw - 340px);
+    min-width: 340px;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    background: #f7f7f7;
+    overflow-y: scroll;
+}
+
 @media only screen and (max-width: 640px) {
     #app-container {
         flex-direction: column;
     }
 
     #control-panel-container {
-        width: 100%;
+        width: 100vw;
+    }
+
+    #thumbnails-preview-container {
+        width: 100vw;
     }
 }
 
@@ -38,19 +56,6 @@ body {
     -webkit-appearance: button;
     -moz-appearance: button;
     appearance: button;
-}
-
-#thumbnails-preview-container {
-    width: calc(100vw - 320px);
-    max-width: calc(100vw - 320px);
-    min-width: 320px;
-    padding: 20px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    background: #f7f7f7;
-    overflow-y: scroll;
 }
 
 .thumbnail {
