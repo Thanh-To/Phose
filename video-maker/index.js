@@ -224,6 +224,7 @@ function render() {
                     },
                     (error) => {
                         console.log(error);
+                        window.alert(error);
                     }
                 );
             });
@@ -247,6 +248,7 @@ function render() {
                 },
                 () => {
                     console.log(error);
+                    window.alert(error);
                 }
             );
         },
@@ -267,6 +269,7 @@ function makeVideo() {
                 render();
             },
             (error) => {
+                window.alert(error);
                 console.log(error);
             }
         );
