@@ -6,6 +6,20 @@ body {
     overflow-x: hidden;
 }
 
+#nav-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #393e46;
+}
+
+#title {
+    color: white;
+}
+
 #app-container {
     display: flex;
     flex-direction: row;
