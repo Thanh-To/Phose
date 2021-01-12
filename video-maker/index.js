@@ -64,7 +64,7 @@ window.onload = function () {
     $sortableList.disableSelection();
 
     let makeVideoButton = document.getElementById('make-video-button');
-    makeVideoButton.addEventListener("click", makeVideo);
+    makeVideoButton.addEventListener("click", () => makeVideo(imageFiles));
 
     let framerateSelector = document.getElementById('framerate-selector');
     FRAME_RATES.forEach(framerate => {
@@ -234,7 +234,7 @@ function getVideoFilter() {
     }
 }
 
-function render() {
+function render(imageFiles) {
     new Promise((onResolve, onError) => {
         try {
             displayProgress();
@@ -280,14 +280,15 @@ function showError(error) {
     console.log(error);
 }
 
-function makeVideo() {
+function makeVideo(imageFiles) {
     console.log("making video...");
 
     if (ffmpeg.isLoaded()) {
-        render().catch(showError);
+        render(imageFiles).catch(showError);
     } else {
-        ffmpeg.load().then(
-            render
-        ).catch(showError);
+        ffmpeg
+          .load()
+          .then(() => render(imageFiles))
+          .catch(showError);
     }
 };
