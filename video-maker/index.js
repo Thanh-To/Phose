@@ -3,12 +3,12 @@ const ffmpeg = createFFmpeg({ log: true});
 
 const FRAME_RATES = [1, 2, 6, 12, 24, 25, 30];
 
-const CROP_MODES = new Map([
+let CROP_MODES = [
     ["Remove black bars", "CROP"],
     ["Shrink to fit", "PAD"]
-]);
+];
 
-const ASPECT_RATIOS = new Map([
+let ASPECT_RATIOS = new Map([
     ["1:1", {
             large: 1,
             small: 1,
@@ -26,24 +26,45 @@ const ASPECT_RATIOS = new Map([
     ]
 ]);
 
-const ORIENTATIONS = new Map([
+let ORIENTATIONS = [
     ["Landscape", "LS"],
     ["Portrait", "PT"]
-]);
+];
 
-const RESOLUTIONS = new Map([
+let RESOLUTIONS = [
     ["1080p", 1080],
     ["720p", 720],
     ["480p", 480]
-]);
+];
 
 let imageFiles = [];
 window.onload = function () {
     let photoImport = document.getElementById('photo-import');
-    photoImport.addEventListener("change", importPhotos);
+    // clearing the file input on the web page load
+    photoImport.value = '';
+    photoImport.addEventListener("change", importPhotos(imageFiles));
+
+    let $sortableList = $("#thumbnails-preview-container");
+    $sortableList.sortable({
+        placeholder: "ui-state-highlight",
+        update: function () {
+            let listElements = $sortableList.children();
+
+            // setting a empty javascript array
+            imageFiles = [];
+
+            listElements.each(function (index, value) {
+                imageFiles.push({
+                    name: value.title,
+                    src: value.src,
+                });
+            });
+        },
+    });
+    $sortableList.disableSelection();
 
     let makeVideoButton = document.getElementById('make-video-button');
-    makeVideoButton.addEventListener("click", makeVideo);
+    makeVideoButton.addEventListener("click", () => makeVideo(imageFiles));
 
     let framerateSelector = document.getElementById('framerate-selector');
     FRAME_RATES.forEach(framerate => {
@@ -54,7 +75,7 @@ window.onload = function () {
     });
 
     let cropSelector = document.getElementById('crop-selector');
-    CROP_MODES.forEach((value, key) => {
+    CROP_MODES.forEach(([value, key]) => {
         let option = document.createElement('option');
         option.value = value;
         option.innerHTML = key;
@@ -70,7 +91,7 @@ window.onload = function () {
     });
 
     let orientationSelector = document.getElementById('orientation-selector');
-    ORIENTATIONS.forEach((value, key) => {
+    ORIENTATIONS.forEach(([value, key]) => {
         let option = document.createElement('option');
         option.value = value;
         option.innerHTML = key;
@@ -78,7 +99,7 @@ window.onload = function () {
     });
 
     let resolutionSelector = document.getElementById('resolution-selector');
-    RESOLUTIONS.forEach((value, key) => {
+    RESOLUTIONS.forEach(([value, key]) => {
         let option = document.createElement('option');
         option.value = value;
         option.innerHTML = key;
@@ -86,93 +107,99 @@ window.onload = function () {
     });
 
     let sortAscendingButton = document.getElementById('sort-ascending-button');
-    sortAscendingButton.addEventListener("click", sortAscending);
+    sortAscendingButton.addEventListener("click", () => {
+        let resortedImages = sortAscending(imageFiles);
+
+        repopulateThumbnailPreviews(resortedImages);
+    });
 
     let sortDescendingButton = document.getElementById('sort-descending-button');
-    sortDescendingButton.addEventListener("click", sortDescending);
-};
+    sortDescendingButton.addEventListener("click", () => {
+        let resortedImages = sortDescending(imageFiles);
 
-function importPhotos() {
-    console.log("importing photos...");
-    if (this.files) {
-        let thumnailsPreviewContainer = document.getElementById('thumbnails-preview-container');
-
-        Array.from(this.files).forEach(file => {
-            let reader = new FileReader();
-
-            reader.onload = function() {
-                let thumbnail = new Image();
-                thumbnail.height = 100;
-                thumbnail.title = file.name;
-                thumbnail.src = String(this.result);
-                thumbnail.classList.add("thumbnail");
-                thumnailsPreviewContainer.appendChild(thumbnail);
-
-                imageFiles.push({
-                    name: file.name,
-                    src: String(this.result)
-                });
-            };
-
-            reader.readAsDataURL(file);
-        });
-    }
-
-    console.log("photos imported");
-    let $sortableList = $("#thumbnails-preview-container")
-    $sortableList.sortable({
-        placeholder: "ui-state-highlight",
-        update: function (event, ui) {
-            let listElements = $sortableList.children();
-            imageFiles = [];
-            listElements.each(function(index, value) {
-                imageFiles.push({
-                    name: value.title,
-                    src: value.src
-                });
-            })
-        }
+        repopulateThumbnailPreviews(resortedImages);
     });
-    $sortableList.disableSelection();
 };
 
-function sortAscending() {
-    imageFiles.sort((a, b) => (a.name > b.name) ? 1 : -1);
-    repopulateThumbnailPreviews();
+function importPhotos(imageFiles) {
+    return function() {
+        if (this.files) {
+            console.log("importing photos...");
+
+            let thumnailsPreviewContainer = document.getElementById('thumbnails-preview-container');
+            let files = Array.from(this.files);
+
+            files.forEach(file => {
+                let reader = new FileReader();
+
+                reader.onload = function() {
+                    let img = {
+                        name: file.name,
+                        src: String(this.result)
+                    };
+
+                    imageFiles.push(img);
+
+                    let thumbnail = createThumbnail(img);
+                    thumnailsPreviewContainer.appendChild(thumbnail);    
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            console.log("photos imported");
+        }
+    }
+};
+
+function sortAscending(images) {
+    return images.sort((a, b) => (a.name > b.name) ? 1 : -1);
 }
 
-function sortDescending() {
-    imageFiles.sort((a, b) => (a.name < b.name) ? 1 : -1);
-    repopulateThumbnailPreviews();
+function sortDescending(images) {
+  return images.sort((a, b) => (a.name < b.name ? 1 : -1));
 }
 
-function repopulateThumbnailPreviews() {
+function createThumbnail(img) {
+    let thumbnail = new Image();
+
+    thumbnail.height = 100;
+    thumbnail.title = img.name;
+    thumbnail.src = String(img.src);
+    thumbnail.classList.add("thumbnail");
+
+    return thumbnail;
+}
+
+function repopulateThumbnailPreviews(thumbnails) {
     let thumnailsPreviewContainer = document.getElementById('thumbnails-preview-container');
     thumnailsPreviewContainer.innerHTML = "";
-    imageFiles.forEach(file => {
-        let thumbnail = new Image();
-        thumbnail.height = 100;
-        thumbnail.title = file.name;
-        thumbnail.src = file.src;
-        thumbnail.classList.add("thumbnail");
-        thumnailsPreviewContainer.appendChild(thumbnail);
+
+    thumbnails.forEach((file) => {
+      let thumbnail = createThumbnail(file);
+
+      thumnailsPreviewContainer.appendChild(thumbnail);
     });
 }
 
 function displayProgress() {
     document.getElementById("loading-overlay").style.display = "block";
-    document.getElementById("progress").style.width = 1 + "%";
-    document.getElementById("progress-text").innerText = 1 + "%";
+    document.getElementById("progress").style.width = 1;
+    document.getElementById("progress-text").innerText = 1;
 }
 
 function updateProgress(ratio) {
     let percentage = Math.max(Math.round(ratio * 100), 1);
-    document.getElementById("progress").style.width = percentage + "%";
-    document.getElementById("progress-text").innerText = percentage + "%";
+    document.getElementById("progress").style.width = percentage;
+    document.getElementById("progress-text").innerText = percentage;
 }
 
 function removeProgress() {
     document.getElementById("loading-overlay").style.display = "none";
+}
+
+function getFrameRate() {
+  return document.getElementById("framerate-selector").value;
 }
 
 function enableDownload(src, filename) {
@@ -183,10 +210,11 @@ function enableDownload(src, filename) {
 }
 
 function getVideoFilter() {
-    let cropMode =  document.getElementById('crop-selector').value;
-    let aspectRatio = ASPECT_RATIOS.get(document.getElementById('aspect-ratio-selector').value);
+    let selectedAspectRatio = document.getElementById("aspect-ratio-selector").value;
     let orientation = document.getElementById('orientation-selector').value;
     let resolution = document.getElementById('resolution-selector').value;
+    let cropMode =  document.getElementById('crop-selector').value;
+    let aspectRatio = ASPECT_RATIOS.get(selectedAspectRatio);
 
     if (orientation == "LS") {
         height = resolution;
@@ -206,21 +234,16 @@ function getVideoFilter() {
     }
 }
 
-function getFrameRate() {
-    return document.getElementById('framerate-selector').value;
-}
-
-function render() {
+function render(imageFiles) {
     new Promise((onResolve, onError) => {
         try {
             displayProgress();
-            console.log(imageFiles);
+
             imageFiles.forEach((imageFile, index) => {
                 fetchFile(imageFile.src).then(
                     (file) => {
                         console.log(imageFile.name);
                         ffmpeg.FS("writeFile", `${index.toString()}.jpg`, file);
-                        index++;
                     },
                     (error) => {
                         console.log(error);
@@ -237,6 +260,7 @@ function render() {
             ffmpeg.setProgress(({ ratio }) => {
                 updateProgress(ratio);
             });
+
             ffmpeg.run("-framerate", getFrameRate(), "-start_number", "0", "-i", "%d.jpg", "-vcodec", "libx264", "-vf", getVideoFilter(), "-pix_fmt", "yuv420p", "video.mp4").then(
                 () => {
                     let video = ffmpeg.FS("readFile", "video.mp4");
@@ -245,33 +269,26 @@ function render() {
                     videoPreview.src = url;
                     enableDownload(url, "video.mp4");
                     removeProgress();
-                },
-                () => {
-                    console.log(error);
-                    window.alert(error);
                 }
             );
-        },
-        () => {
-            console.log(error);
         }
     )
 }
 
-function makeVideo() {
+function showError(error) {
+    window.alert(error);
+    console.log(error);
+}
+
+function makeVideo(imageFiles) {
     console.log("making video...");
 
     if (ffmpeg.isLoaded()) {
-        render();
+        render(imageFiles).catch(showError);
     } else {
-        ffmpeg.load().then(
-            () => {
-                render();
-            },
-            (error) => {
-                window.alert(error);
-                console.log(error);
-            }
-        );
+        ffmpeg
+          .load()
+          .then(() => render(imageFiles))
+          .catch(showError);
     }
 };
