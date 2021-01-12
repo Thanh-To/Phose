@@ -1,9 +1,10 @@
 /* https://colorhunt.co/palette/130807 */
 
 body {
-    font-family: sans-serif;
     margin: 0px;
+    height: 100vh;
     overflow-x: hidden;
+    font-family: sans-serif;
 }
 
 #nav-container {
@@ -18,12 +19,15 @@ body {
 
 #title {
     color: white;
+    font-size: 25px;
+    text-decoration: none;
 }
 
 #app-container {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: row;
-    width: 100%;
 }
 
 #control-panel-container {
@@ -36,6 +40,10 @@ body {
     background: #eeeeee;
 }
 
+#control-panel-container video {
+    width: 100%;
+}
+
 #thumbnails-preview-container {
     width: calc(100vw - 340px);
     min-width: 340px;
@@ -46,20 +54,6 @@ body {
     justify-content: flex-start;
     background: #f7f7f7;
     overflow-y: scroll;
-}
-
-@media only screen and (max-width: 640px) {
-    #app-container {
-        flex-direction: column;
-    }
-
-    #control-panel-container {
-        width: 100vw;
-    }
-
-    #thumbnails-preview-container {
-        width: 100vw;
-    }
 }
 
 #download-video-button {
@@ -115,4 +109,26 @@ body {
     width: 1%;
     height: 30px;
     background-color: green;
+}
+
+#progress::after {
+    content: '%';
+}
+
+#progress-text::after {
+    content: '%';
+}
+
+@media only screen and (max-width: 640px) {
+    #app-container {
+        flex-direction: column;
+    }
+
+    #control-panel-container {
+        width: 100vw;
+    }
+
+    #thumbnails-preview-container {
+        width: 100vw;
+    }
 }
